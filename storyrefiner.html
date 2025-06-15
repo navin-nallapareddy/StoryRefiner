@@ -61,6 +61,7 @@ async function handleStory(action) {
 
   loadingDiv.style.display = "block";
   outputDiv.style.display = "none";
+  outputDiv.innerHTML = ""; // Clear previous
   buttons.forEach(btn => {
     btn.disabled = true;
     btn.dataset.originalText = btn.textContent;
@@ -72,6 +73,7 @@ async function handleStory(action) {
     : `Rewrite the following user story in a clear format. Include assumptions and acceptance criteria. Present the result in a markdown table format.\n\n${story}`;
 
   try {
+    console.log("Sending request...");
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -86,6 +88,7 @@ async function handleStory(action) {
     });
 
     const data = await response.json();
+    console.log("Response received:", data);
     let result = data.choices?.[0]?.message?.content || "No response.";
 
     if (result.includes("|") && result.includes("\n")) {
@@ -106,8 +109,9 @@ async function handleStory(action) {
     outputDiv.innerHTML = result;
     outputDiv.style.display = "block";
   } catch (err) {
-    alert("Error communicating with OpenAI API. Check your key or try again.");
-    console.error(err);
+    console.error("ERROR:", err);
+    outputDiv.innerHTML = "<div style='color:red;'><strong>Error:</strong> " + err.message + "</div>";
+    outputDiv.style.display = "block";
   } finally {
     loadingDiv.style.display = "none";
     buttons.forEach(btn => {
