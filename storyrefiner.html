@@ -18,6 +18,7 @@
     th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; vertical-align: top; }
     th { background-color: #f7fafc; }
     #loading { display: none; margin-top: 1rem; font-weight: bold; color: #2b6cb0; }
+    .suggestions { margin-top: 1rem; }
   </style>
 </head>
 <body>
@@ -57,7 +58,7 @@
       outputDiv.style.display = "none";
 
       const prompt = action === 'rate'
-        ? `Rate the following user story for clarity, completeness, outcome, and testability. Then give suggestions in a markdown table format.\n\n${story}`
+        ? `Rate the following user story for clarity, completeness, outcome, and testability. Then give suggestions in a markdown table format followed by numbered suggestions if necessary.\n\n${story}`
         : `Rewrite the following user story in a clear format. Include assumptions and acceptance criteria. Present the result in a markdown table format.\n\n${story}`;
 
       try {
@@ -78,7 +79,16 @@
         let result = data.choices?.[0]?.message?.content || "No response.";
 
         if (result.includes("|") && result.includes("\n")) {
-          result = markdownTableToHtml(result);
+          const [tablePart, ...otherParts] = result.split(/\n\s*\n/);
+          let html = markdownTableToHtml(tablePart);
+          if (otherParts.length > 0) {
+            html += '<div class="suggestions"><strong>Suggestions:</strong><ul>';
+            otherParts.join("\n").split(/\n\d+\.\s/).filter(x => x).forEach(item => {
+              html += "<li>" + item.trim().replace(/^\d+\.\s*/, "") + "</li>";
+            });
+            html += "</ul></div>";
+          }
+          result = html;
         } else {
           result = "<pre>" + result + "</pre>";
         }
