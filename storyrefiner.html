@@ -72,54 +72,52 @@
     <textarea id="story" placeholder="e.g. As a user, I want to..."></textarea>
 
     <div class="buttons">
-      <button onclick="rateStory()">Rate</button>
-      <button onclick="rewriteStory()">Rewrite</button>
+      <button onclick="handleAI('rate')">Rate</button>
+      <button onclick="handleAI('rewrite')">Rewrite</button>
     </div>
 
     <div id="output" class="output" style="display: none;"></div>
   </div>
 
   <script>
-    function rateStory() {
+    async function handleAI(mode) {
       const story = document.getElementById('story').value.trim();
       if (!story) return;
-      const output = `⭐ Rating for: "${story}"
 
-Clarity: ⭐⭐
-Testability: ⭐
-Outcome-driven: ⭐⭐
-Completeness: ⭐⭐
+      let prompt = '';
+      if (mode === 'rate') {
+        prompt = `Rate the following user story for clarity, completeness, outcome, and testability. Then give improvement suggestions.\n\n${story}`;
+      } else {
+        prompt = `Rewrite the following user story in a clear format. Include assumptions and acceptance criteria.\n\n${story}`;
+      }
 
-Suggestions:
-- Specify who the user is.
-- Include outcome or goal.
-- Add acceptance criteria.`;
-      showOutput(output);
-    }
-
-    function rewriteStory() {
-      const story = document.getElementById('story').value.trim();
-      if (!story) return;
-      const output = `Rewritten Story:
-As a returning user, I want to see a login button on the homepage so I can quickly access my account.
-
-Assumptions:
-- Users may arrive without being authenticated
-- The login system already exists
-- The homepage layout supports header buttons
-
-Acceptance Criteria:
-- Button appears for unauthenticated users
-- Redirects to login page
-- Responsive and visible on all screen sizes
-- Follows design system`;
-      showOutput(output);
-    }
-
-    function showOutput(text) {
       const outputDiv = document.getElementById('output');
-      outputDiv.textContent = text;
       outputDiv.style.display = 'block';
+      outputDiv.textContent = 'Thinking...';
+
+      try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer YOUR_OPENAI_API_KEY_HERE'
+          },
+          body: JSON.stringify({
+            model: 'gpt-3.5-turbo',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 500
+          })
+        });
+
+        const data = await response.json();
+        if (data.choices && data.choices.length > 0) {
+          outputDiv.textContent = data.choices[0].message.content.trim();
+        } else {
+          outputDiv.textContent = 'No response from AI.';
+        }
+      } catch (error) {
+        outputDiv.textContent = 'Error: ' + error.message;
+      }
     }
   </script>
 </body>
