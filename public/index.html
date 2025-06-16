@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,6 +52,21 @@
       border-radius: 5px;
       white-space: pre-wrap;
     }
+    #result table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #ccc;
+    }
+    #result th,
+    #result td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    #result th {
+      background-color: #2563eb;
+      color: white;
+    }
     .spinner {
       display: inline-block;
       width: 24px;
@@ -103,17 +117,21 @@
         });
 
         if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API error (${response.status}): ${errorText}`);
-      }
-      const data = await response.json();
+          const errorText = await response.text();
+          throw new Error(`API error (${response.status}): ${errorText}`);
+        }
+
+        const data = await response.json();
         if (type === 'rate') {
-          document.getElementById('result').innerHTML = '<table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><tr style="background-color:#f0f4f8;"><th style="padding:10px;border:1px solid #ccc;">Criteria</th><th style="padding:10px;border:1px solid #ccc;">Rating</th><th style="padding:10px;border:1px solid #ccc;">Comments</th></tr>' + data.result + '</table>';
+          document.getElementById('result').innerHTML = 
+            '<table><tr><th>Criteria</th><th>Rating</th><th>Comments</th></tr>' + 
+            data.result + 
+            '</table>';
         } else {
           document.getElementById('result').innerText = data.result;
         }
       } catch (error) {
-      console.error('Error response:', error);
+        console.error('Error response:', error);
         document.getElementById('result').innerHTML = '<div style="color:red">Error: ' + error.message + '</div>';
       } finally {
         document.getElementById('loader').style.display = 'none';
