@@ -6,7 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>StoryRefiner</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
     body {
+      font-family: 'Inter', sans-serif;
+      color: #333;
       font-family: Arial, sans-serif;
       background: #f9f9f9;
       margin: 0;
@@ -15,7 +18,7 @@
     .container {
       max-width: 800px;
       margin: auto;
-      background: white;
+      background: #ffffff;
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -30,12 +33,22 @@
       font-size: 1rem;
     }
     button {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      transition: background-color 0.3s;
       padding: 10px 20px;
       margin: 5px;
       font-size: 1rem;
       cursor: pointer;
     }
+    button:hover {
+      background-color: #1d4ed8;
+    }
     #result {
+      border: 1px solid #ddd;
+      color: #222;
       margin-top: 20px;
       padding: 10px;
       background: #f0f0f0;
@@ -81,7 +94,7 @@
 
       let prompt = '';
       if (type === 'rate') {
-        prompt = `Please rate the following user story based on the following criteria:\n\n- Clarity\n- Feasibility\n- Testability\n- Completeness\n- Value\n\nReturn the results as HTML <tr> rows only, like this:\n<tr><td>Clarity</td><td>8/10</td><td>Clear but missing outcome detail</td></tr>\n...\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
+        prompt = `Please rate the following user story based on the following criteria:\n\n- Clarity\n- Feasibility\n- Testability\n- Completeness\n- Value\n\nReturn the results as HTML <tr> rows only, like this:\n<tr><td style="padding: 10px; border: 1px solid #ccc;">Clarity</td><td style="padding: 10px; border: 1px solid #ccc;">8/10</td><td style="padding: 10px; border: 1px solid #ccc;">Clear but missing outcome detail</td></tr>\n...\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
       } else {
         prompt = `Please rewrite the following user story in proper format.\n\n1. Use the format: 'As a [user], I want to [goal] so that [reason]'.\n2. List assumptions clearly.\n3. Provide well-defined, bullet-point acceptance criteria.\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
       }
@@ -103,7 +116,7 @@
         const content = data.choices[0].message.content;
 
         if (type === 'rate') {
-          document.getElementById('result').innerHTML = '<table border="1" cellpadding="10"><tr><th>Criteria</th><th>Rating</th><th>Comments</th></tr>' + content + '</table>';
+          document.getElementById('result').innerHTML = '<table style="width: 100%; border-collapse: collapse; border: 1px solid #ccc;" cellpadding="10"><tr style="background-color: #f0f4f8;"><th style="padding: 10px; border: 1px solid #ccc;">Criteria</th><th style="padding: 10px; border: 1px solid #ccc;">Rating</th><th style="padding: 10px; border: 1px solid #ccc;">Comments</th></tr>' + content + '</table>';
         } else {
           document.getElementById('result').innerText = content;
         }
