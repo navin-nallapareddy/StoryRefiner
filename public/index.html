@@ -84,8 +84,36 @@
   </style>
 </head>
 <body>
+  
+  <div style="position: absolute; top: 20px; left: 30px;">
+    <img src="Navin.jpeg" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.2);" / style="width: 80px; height: 80px; border-radius: 50%;" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 8px rgba(0,0,0,0.2);">
+</div>
+  
+  <div style="position: absolute; top: 30px; right: 30px;">
+    <a href="https://coff.ee/9cz644dq57s" target="_blank" style="
+        text-decoration: none;
+        background-color: #ffdd00;
+        color: #000;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-family: 'Segoe UI', sans-serif;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    ">
+        ☕ Buy Me a Coffee
+    </a>
+</div>
+  
   <div class="container">
-    <h1>AI User Story Refiner</h1>
+    <h1 style="
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-align: center;
+    background: linear-gradient(to right, #3b82f6, #9333ea);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 2rem;">AI User Story Refiner</h1>
+
     <textarea id="userStory" rows="4" placeholder="Enter User Story"></textarea>
     <textarea id="acceptanceCriteria" rows="4" placeholder="Enter Acceptance Criteria"></textarea>
     <button onclick="callOpenAI('rate')">Rate It</button>
