@@ -36,7 +36,6 @@ app.use((req, res, next) => {
 
   const logEntry = {
     time: new Date().toISOString(),
-    ip,
     location: req.location,
     userAgent: req.headers['user-agent'],
     url: req.originalUrl,
