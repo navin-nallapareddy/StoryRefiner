@@ -230,12 +230,39 @@
 
         const data = await response.json();
         if (type === 'rate') {
-          document.getElementById('result').innerHTML = 
-            '<table><tr><th>Criteria</th><th>Rating</th><th>Comments</th></tr>' + 
-            data.result + 
+          document.getElementById('result').innerHTML =
+            '<table><tr><th>Criteria</th><th>Rating</th><th>Comments</th></tr>' +
+            data.result +
             '</table>';
         } else {
           document.getElementById('result').innerText = data.result;
+        }
+
+        const payload = {
+          action: type === 'rate' ? 'RATE' : 'REWRITE',
+          original_story: userStory,
+          original_criteria: acceptanceCriteria,
+          raw_response: data.raw
+        };
+
+        if (type === 'rate') {
+          payload.ratings = data.result;
+        } else {
+          payload.rewritten_story = data.result;
+        }
+
+        try {
+          const insertResp = await fetch('/user-story', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (!insertResp.ok) {
+            const errorText = await insertResp.text();
+            console.error('Insert error:', errorText);
+          }
+        } catch (err) {
+          console.error('Insert error:', err);
         }
       } catch (error) {
         console.error('Error response:', error);
