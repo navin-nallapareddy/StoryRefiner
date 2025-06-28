@@ -128,7 +128,13 @@ app.post('/user-story', async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
-  const client = await pool.connect();
+  let client;
+  try {
+    client = await pool.connect();
+  } catch (err) {
+    console.error('Database connection failed', err);
+    return res.status(500).json({ error: 'Database connection failed' });
+  }
   try {
     await client.query('BEGIN');
     const userStoryInsert = await client.query(
