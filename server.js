@@ -39,6 +39,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Route to download the user log
+app.get('/download-log', (req, res) => {
+  res.download(path.join(__dirname, 'user_log.json'));
+});
+
 // API endpoint
 app.post('/api/openai', async (req, res) => {
   const { prompt } = req.body;
