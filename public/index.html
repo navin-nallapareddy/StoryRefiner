@@ -15,6 +15,7 @@
     --button-hover-bg: #1d4ed8;
     --header-gradient: linear-gradient(to right, #3b82f6, #9333ea);
     --table-header-bg: #2563eb;
+    --table-text-color: #333;
   }
   body {
     font-family: 'Inter', sans-serif;
@@ -77,6 +78,7 @@
     padding: 10px;
     border: 1px solid #ccc;
     text-align: left;
+    color: var(--table-text-color);
   }
   #result th {
     background-color: var(--table-header-bg);
@@ -117,18 +119,6 @@
       <option value="pastel">Soft Pastel</option>
       <option value="tech">Cool Tech</option>
   </select>
-
-  <a href="https://coff.ee/9cz644dq57s" target="_blank" style="
-      text-decoration: none;
-      background-color: #ffdd00;
-      color: #000;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-family: 'Segoe UI', sans-serif;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-    ☕ Buy Me a Coffee
-  </a>
 </div>
 
 <div class="container">
@@ -157,6 +147,7 @@ function applyTheme(theme) {
       root.style.setProperty('--button-hover-bg', '#1d4ed8');
       root.style.setProperty('--header-gradient', 'linear-gradient(to right, #3b82f6, #9333ea)');
       root.style.setProperty('--table-header-bg', '#2563eb');
+      root.style.setProperty('--table-text-color', '#333');
       break;
     case 'dark':
       root.style.setProperty('--bg-color', '#1e1e1e');
@@ -166,6 +157,7 @@ function applyTheme(theme) {
       root.style.setProperty('--button-hover-bg', '#6d28d9');
       root.style.setProperty('--header-gradient', 'linear-gradient(to right, #8b5cf6, #ec4899)');
       root.style.setProperty('--table-header-bg', '#7c3aed');
+      root.style.setProperty('--table-text-color', '#e0e0e0');
       break;
     case 'earthy':
       root.style.setProperty('--bg-color', '#f5f0e1');
@@ -175,6 +167,7 @@ function applyTheme(theme) {
       root.style.setProperty('--button-hover-bg', '#8b4513');
       root.style.setProperty('--header-gradient', 'linear-gradient(to right, #d97706, #92400e)');
       root.style.setProperty('--table-header-bg', '#b5651d');
+      root.style.setProperty('--table-text-color', '#5a4636');
       break;
     case 'pastel':
       root.style.setProperty('--bg-color', '#fdf6f0');
@@ -184,6 +177,7 @@ function applyTheme(theme) {
       root.style.setProperty('--button-hover-bg', '#ec4899');
       root.style.setProperty('--header-gradient', 'linear-gradient(to right, #f472b6, #a78bfa)');
       root.style.setProperty('--table-header-bg', '#f472b6');
+      root.style.setProperty('--table-text-color', '#444');
       break;
     case 'tech':
       root.style.setProperty('--bg-color', '#0f172a');
@@ -193,13 +187,13 @@ function applyTheme(theme) {
       root.style.setProperty('--button-hover-bg', '#0ea5e9');
       root.style.setProperty('--header-gradient', 'linear-gradient(to right, #38bdf8, #818cf8)');
       root.style.setProperty('--table-header-bg', '#38bdf8');
+      root.style.setProperty('--table-text-color', '#e2e8f0');
       break;
   }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  const selectedTheme = document.getElementById('themeSwitcher').value;
-  applyTheme(selectedTheme);
+  applyTheme(document.getElementById('themeSwitcher').value);
 });
 </script>
 
@@ -207,40 +201,27 @@ window.addEventListener('DOMContentLoaded', () => {
 async function callOpenAI(type) {
   document.getElementById('loader').style.display = 'inline-block';
   document.getElementById('result').innerHTML = '';
-
   const userStory = document.getElementById('userStory').value;
   const acceptanceCriteria = document.getElementById('acceptanceCriteria').value;
-
   let prompt = '';
   if (type === 'rate') {
-    prompt = `Please rate the following user story based on the following criteria:\n\n- Clarity\n- Feasibility\n- Testability\n- Completeness\n- Value\n\nReturn the results as HTML <tr> rows only, like this:\n<tr><td>Clarity</td><td>8/10</td><td>Clear but missing outcome detail</td></tr>\n...\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
+    prompt = `Please rate the following user story based on criteria... User Story: ${userStory} Acceptance Criteria: ${acceptanceCriteria}`;
   } else {
-    prompt = `Please rewrite the following user story in proper format.\n\n1. Use the format: 'As a [user], I want to [goal] so that [reason]'.\n2. List assumptions clearly.\n3. Provide well-defined, bullet-point acceptance criteria.\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
+    prompt = `Please rewrite the following user story... User Story: ${userStory} Acceptance Criteria: ${acceptanceCriteria}`;
   }
-
   try {
     const response = await fetch('/api/openai', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt })
     });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`API error (${response.status}): ${errorText}`);
-    }
-
+    if (!response.ok) throw new Error(`API error (${response.status}): ` + await response.text());
     const data = await response.json();
-    if (type === 'rate') {
-      document.getElementById('result').innerHTML = 
-        '<table><tr><th>Criteria</th><th>Rating</th><th>Comments</th></tr>' + 
-        data.result + 
-        '</table>';
-    } else {
-      document.getElementById('result').innerText = data.result;
-    }
+    document.getElementById('result').innerHTML = 
+      (type === 'rate') ? 
+      '<table><tr><th>Criteria</th><th>Rating</th><th>Comments</th></tr>' + data.result + '</table>' :
+      data.result;
   } catch (error) {
-    console.error('Error response:', error);
+    console.error('Error:', error);
     document.getElementById('result').innerHTML = '<div style="color:red">Error: ' + error.message + '</div>';
   } finally {
     document.getElementById('loader').style.display = 'none';
