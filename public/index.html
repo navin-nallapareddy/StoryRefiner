@@ -119,6 +119,17 @@
       <option value="pastel">Soft Pastel</option>
       <option value="tech">Cool Tech</option>
   </select>
+  <a href="https://coff.ee/9cz644dq57s" target="_blank" style="
+      text-decoration: none;
+      background-color: #ffdd00;
+      color: #000;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-family: 'Segoe UI', sans-serif;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    ☕ Buy Me a Coffee
+  </a>
 </div>
 
 <div class="container">
@@ -135,7 +146,6 @@
 document.getElementById('themeSwitcher').addEventListener('change', function() {
   applyTheme(this.value);
 });
-
 function applyTheme(theme) {
   const root = document.documentElement;
   switch(theme) {
@@ -191,7 +201,6 @@ function applyTheme(theme) {
       break;
   }
 }
-
 window.addEventListener('DOMContentLoaded', () => {
   applyTheme(document.getElementById('themeSwitcher').value);
 });
@@ -205,23 +214,26 @@ async function callOpenAI(type) {
   const acceptanceCriteria = document.getElementById('acceptanceCriteria').value;
   let prompt = '';
   if (type === 'rate') {
-    prompt = `Please rate the following user story based on criteria... User Story: ${userStory} Acceptance Criteria: ${acceptanceCriteria}`;
+    prompt = `Please rate the following user story based on the following criteria:\n\n- Clarity\n- Feasibility\n- Testability\n- Completeness\n- Value\n\nReturn the results as HTML <tr> rows only, like this:\n<tr><td>Clarity</td><td>8/10</td><td>Clear but missing outcome detail</td></tr>\n...\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
   } else {
-    prompt = `Please rewrite the following user story... User Story: ${userStory} Acceptance Criteria: ${acceptanceCriteria}`;
+    prompt = `Please rewrite the following user story in proper format.\n\n1. Use the format: 'As a [user], I want to [goal] so that [reason]'.\n2. List assumptions clearly.\n3. Provide well-defined, bullet-point acceptance criteria.\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
   }
   try {
     const response = await fetch('/api/openai', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt })
     });
     if (!response.ok) throw new Error(`API error (${response.status}): ` + await response.text());
     const data = await response.json();
-    document.getElementById('result').innerHTML = 
-      (type === 'rate') ? 
-      '<table><tr><th>Criteria</th><th>Rating</th><th>Comments</th></tr>' + data.result + '</table>' :
-      data.result;
+    if (type === 'rate') {
+      document.getElementById('result').innerHTML =
+        '<table><tr><th>Criteria</th><th>Rating</th><th>Comments</th></tr>' + data.result + '</table>';
+    } else {
+      document.getElementById('result').innerText = data.result;
+    }
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error response:', error);
     document.getElementById('result').innerHTML = '<div style="color:red">Error: ' + error.message + '</div>';
   } finally {
     document.getElementById('loader').style.display = 'none';
