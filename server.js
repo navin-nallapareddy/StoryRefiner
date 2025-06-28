@@ -69,7 +69,10 @@ app.post('/api/openai', async (req, res) => {
       model: 'gpt-4',
       messages: [{ role: 'user', content: prompt }],
     });
-    res.json({ result: chat.choices[0].message.content });
+    res.json({
+      result: chat.choices[0].message.content,
+      raw: chat
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
