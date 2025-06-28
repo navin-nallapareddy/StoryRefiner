@@ -6,17 +6,75 @@
   <title>StoryRefiner</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    :root {
+      --bg-color: #f9f9f9;
+      --text-color: #333;
+      --container-bg-color: #ffffff;
+      --button-bg-color: #2563eb;
+      --button-hover-color: #1d4ed8;
+      --header-gradient-start: #3b82f6;
+      --header-gradient-end: #9333ea;
+      --result-bg-color: #f0f0f0;
+      --result-border-color: #ddd;
+      --result-table-th-bg: #2563eb;
+      --link-bg-color: #ffdd00;
+      --link-text-color: #000;
+    }
+
+    /* Ocean Breeze theme */
+    .theme-ocean {
+      --bg-color: #e0f7fa;
+      --text-color: #006064;
+      --container-bg-color: #ffffff;
+      --button-bg-color: #00acc1;
+      --button-hover-color: #00838f;
+      --header-gradient-start: #00acc1;
+      --header-gradient-end: #004d40;
+      --result-bg-color: #b2ebf2;
+      --result-border-color: #4dd0e1;
+      --result-table-th-bg: #00acc1;
+    }
+
+    /* Earth Tones theme */
+    .theme-earth {
+      --bg-color: #f7f4e9;
+      --text-color: #7b4b3a;
+      --container-bg-color: #ffffff;
+      --button-bg-color: #c19a6b;
+      --button-hover-color: #966d4f;
+      --header-gradient-start: #c19a6b;
+      --header-gradient-end: #7b4b3a;
+      --result-bg-color: #f0eae2;
+      --result-border-color: #d6c7b7;
+      --result-table-th-bg: #c19a6b;
+    }
+
+    /* Midnight theme */
+    .theme-midnight {
+      --bg-color: #1a1a2e;
+      --text-color: #e0e0e0;
+      --container-bg-color: #16213e;
+      --button-bg-color: #0f3460;
+      --button-hover-color: #e94560;
+      --header-gradient-start: #0f3460;
+      --header-gradient-end: #e94560;
+      --result-bg-color: #212c45;
+      --result-border-color: #33415c;
+      --result-table-th-bg: #0f3460;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
-      background: #f9f9f9;
-      color: #333;
+      background: var(--bg-color);
+      color: var(--text-color);
       margin: 0;
       padding: 2rem;
     }
     .container {
       max-width: 800px;
       margin: auto;
-      background: #ffffff;
+      background: var(--container-bg-color);
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -34,7 +92,7 @@
       padding: 10px 20px;
       margin: 5px;
       font-size: 1rem;
-      background-color: #2563eb;
+      background-color: var(--button-bg-color);
       color: white;
       border: none;
       border-radius: 6px;
@@ -42,13 +100,13 @@
       transition: background-color 0.3s;
     }
     button:hover {
-      background-color: #1d4ed8;
+      background-color: var(--button-hover-color);
     }
     #result {
       margin-top: 20px;
       padding: 10px;
-      background: #f0f0f0;
-      border: 1px solid #ddd;
+      background: var(--result-bg-color);
+      border: 1px solid var(--result-border-color);
       border-radius: 5px;
       white-space: pre-wrap;
     }
@@ -64,7 +122,7 @@
       text-align: left;
     }
     #result th {
-      background-color: #2563eb;
+      background-color: var(--result-table-th-bg);
       color: white;
     }
     .spinner {
@@ -92,8 +150,8 @@
   <div style="position: absolute; top: 30px; right: 30px;">
     <a href="https://coff.ee/9cz644dq57s" target="_blank" style="
         text-decoration: none;
-        background-color: #ffdd00;
-        color: #000;
+        background-color: var(--link-bg-color);
+        color: var(--link-text-color);
         padding: 8px 14px;
         border-radius: 6px;
         font-weight: 600;
@@ -102,14 +160,19 @@
     ">
         ☕ Buy Me a Coffee
     </a>
-</div>
+    <select id="themeSelector" style="margin-left:10px; padding:6px; border-radius:6px;">
+      <option value="ocean">Ocean Breeze</option>
+      <option value="earth">Earth Tones</option>
+      <option value="midnight">Midnight</option>
+    </select>
+  </div>
   
   <div class="container">
     <h1 style="
     font-size: 2.5rem;
     font-weight: 800;
     text-align: center;
-    background: linear-gradient(to right, #3b82f6, #9333ea);
+    background: linear-gradient(to right, var(--header-gradient-start), var(--header-gradient-end));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 2rem;">AI User Story Refiner</h1>
@@ -123,6 +186,22 @@
   </div>
 
   <script>
+    function applyTheme(name) {
+      document.body.classList.remove('theme-ocean', 'theme-earth', 'theme-midnight');
+      document.body.classList.add('theme-' + name);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const selector = document.getElementById('themeSelector');
+      const saved = localStorage.getItem('theme') || 'ocean';
+      applyTheme(saved);
+      selector.value = saved;
+      selector.addEventListener('change', () => {
+        applyTheme(selector.value);
+        localStorage.setItem('theme', selector.value);
+      });
+    });
+
     async function callOpenAI(type) {
       document.getElementById('loader').style.display = 'inline-block';
       document.getElementById('result').innerHTML = '';
