@@ -37,3 +37,17 @@ Use the `APP_ENV` environment variable to route inserts:
 
 - `APP_ENV=PROD` (default) &rarr; tables `user_stories` and `ai_responses`.
 - `APP_ENV=TEST` &rarr; tables `tt_user_stories` and `tt_ai_responses`.
+
+## Database Schema
+
+The SQL definitions for all tables are located in [docs/schema.sql](docs/schema.sql). These statements can be used to reproduce the required database structure.
+
+### Updating existing test tables
+
+Older deployments of `tt_ai_responses` may be missing the `action` column. Apply the migration in `docs/migrations/tt_ai_responses_add_action.sql` or run the following SQL manually:
+
+```sql
+ALTER TABLE tt_ai_responses ADD COLUMN action VARCHAR(20) NOT NULL;
+```
+
+Without this column, `/user-story` requests will fail with a *column "action" does not exist* error.
