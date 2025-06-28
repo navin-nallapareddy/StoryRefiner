@@ -1,170 +1,119 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>StoryRefiner</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f9f9f9;
-      color: #333;
-      margin: 0;
-      padding: 2rem;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: #ffffff;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    h1 {
-      text-align: center;
-    }
-    textarea, input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 1rem;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 5px;
-      font-size: 1rem;
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #1d4ed8;
-    }
-    #result {
-      margin-top: 20px;
-      padding: 10px;
-      background: #f0f0f0;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      white-space: pre-wrap;
-    }
-    #result table {
-      width: 100%;
-      border-collapse: collapse;
-      border: 1px solid #ccc;
-    }
-    #result th,
-    #result td {
-      padding: 10px;
-      border: 1px solid #ccc;
-      text-align: left;
-    }
-    #result th {
-      background-color: #2563eb;
-      color: white;
-    }
-    .spinner {
-      display: inline-block;
-      width: 24px;
-      height: 24px;
-      border: 3px solid rgba(0, 0, 0, 0.1);
-      border-left-color: #000;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      vertical-align: middle;
-      margin-left: 10px;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>StoryRefiner</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  
-  <div style="position: absolute; top: 20px; left: 30px;">
-    <img src="Navin.jpeg" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.2);" / style="width: 80px; height: 80px; border-radius: 50%;" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 8px rgba(0,0,0,0.2);">
+
+<div style="position: absolute; top: 20px; left: 30px;">
+  <img src="Navin.jpeg" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.2);" />
 </div>
+
+<div style="position: absolute; top: 30px; right: 30px;">
   
-  <div style="position: absolute; top: 30px; right: 30px;">
-    <a href="https://coff.ee/9cz644dq57s" target="_blank" style="
-        text-decoration: none;
-        background-color: #ffdd00;
-        color: #000;
-        padding: 8px 14px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-family: 'Segoe UI', sans-serif;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    ">
-        ☕ Buy Me a Coffee
-    </a>
+<select id="themeSwitcher" style="
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      margin-right: 10px;">
+    <option value="modern">Modern Minimal</option>
+    <option value="dark">Elegant Dark</option>
+    <option value="earthy" selected>Earthy Organic</option>
+    <option value="pastel">Soft Pastel</option>
+    <option value="tech">Cool Tech</option>
+</select>
+
+  <a href="https://coff.ee/9cz644dq57s" target="_blank" style="
+      text-decoration: none;
+      background-color: #ffdd00;
+      color: #000;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-family: 'Segoe UI', sans-serif;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    ☕ Buy Me a Coffee
+  </a>
 </div>
-  
-  <div class="container">
-    <h1 style="
-    font-size: 2.5rem;
-    font-weight: 800;
-    text-align: center;
-    background: linear-gradient(to right, #3b82f6, #9333ea);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 2rem;">AI User Story Refiner</h1>
 
-    <textarea id="userStory" rows="4" placeholder="Enter User Story"></textarea>
-    <textarea id="acceptanceCriteria" rows="4" placeholder="Enter Acceptance Criteria"></textarea>
-    <button onclick="callOpenAI('rate')">Rate It</button>
-    <button onclick="callOpenAI('rewrite')">Re-write</button>
-    <div id="loader" style="display:none;" class="spinner"></div>
-    <div id="result"></div>
-  </div>
+<div class="container">
+  <h1>AI User Story Refiner</h1>
+  <textarea id="userStory" rows="4" placeholder="Enter User Story"></textarea>
+  <textarea id="acceptanceCriteria" rows="4" placeholder="Enter Acceptance Criteria"></textarea>
+  <button onclick="callOpenAI('rate')">Rate It</button>
+  <button onclick="callOpenAI('rewrite')">Re-write</button>
+  <div id="loader" style="display:none;" class="spinner"></div>
+  <div id="result"></div>
+</div>
 
-  <script>
-    async function callOpenAI(type) {
-      document.getElementById('loader').style.display = 'inline-block';
-      document.getElementById('result').innerHTML = '';
 
-      const userStory = document.getElementById('userStory').value;
-      const acceptanceCriteria = document.getElementById('acceptanceCriteria').value;
+<script>
+document.getElementById('themeSwitcher').addEventListener('change', function() {
+  applyTheme(this.value);
+});
 
-      let prompt = '';
-      if (type === 'rate') {
-        prompt = `Please rate the following user story based on the following criteria:\n\n- Clarity\n- Feasibility\n- Testability\n- Completeness\n- Value\n\nReturn the results as HTML <tr> rows only, like this:\n<tr><td>Clarity</td><td>8/10</td><td>Clear but missing outcome detail</td></tr>\n...\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
-      } else {
-        prompt = `Please rewrite the following user story in proper format.\n\n1. Use the format: 'As a [user], I want to [goal] so that [reason]'.\n2. List assumptions clearly.\n3. Provide well-defined, bullet-point acceptance criteria.\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
-      }
+function applyTheme(theme) {
+  const root = document.documentElement;
+  switch(theme) {
+    case 'modern':
+      root.style.setProperty('--bg-color', '#f9f9f9');
+      root.style.setProperty('--container-bg', '#ffffff');
+      root.style.setProperty('--text-color', '#333');
+      root.style.setProperty('--button-bg', '#2563eb');
+      root.style.setProperty('--button-hover-bg', '#1d4ed8');
+      root.style.setProperty('--header-gradient', 'linear-gradient(to right, #3b82f6, #9333ea)');
+      root.style.setProperty('--table-header-bg', '#2563eb');
+      break;
+    case 'dark':
+      root.style.setProperty('--bg-color', '#1e1e1e');
+      root.style.setProperty('--container-bg', '#2c2c2c');
+      root.style.setProperty('--text-color', '#e0e0e0');
+      root.style.setProperty('--button-bg', '#7c3aed');
+      root.style.setProperty('--button-hover-bg', '#6d28d9');
+      root.style.setProperty('--header-gradient', 'linear-gradient(to right, #8b5cf6, #ec4899)');
+      root.style.setProperty('--table-header-bg', '#7c3aed');
+      break;
+    case 'earthy':
+      root.style.setProperty('--bg-color', '#f5f0e1');
+      root.style.setProperty('--container-bg', '#fffaf3');
+      root.style.setProperty('--text-color', '#5a4636');
+      root.style.setProperty('--button-bg', '#b5651d');
+      root.style.setProperty('--button-hover-bg', '#8b4513');
+      root.style.setProperty('--header-gradient', 'linear-gradient(to right, #d97706, #92400e)');
+      root.style.setProperty('--table-header-bg', '#b5651d');
+      break;
+    case 'pastel':
+      root.style.setProperty('--bg-color', '#fdf6f0');
+      root.style.setProperty('--container-bg', '#ffffff');
+      root.style.setProperty('--text-color', '#444');
+      root.style.setProperty('--button-bg', '#f472b6');
+      root.style.setProperty('--button-hover-bg', '#ec4899');
+      root.style.setProperty('--header-gradient', 'linear-gradient(to right, #f472b6, #a78bfa)');
+      root.style.setProperty('--table-header-bg', '#f472b6');
+      break;
+    case 'tech':
+      root.style.setProperty('--bg-color', '#0f172a');
+      root.style.setProperty('--container-bg', '#1e293b');
+      root.style.setProperty('--text-color', '#e2e8f0');
+      root.style.setProperty('--button-bg', '#38bdf8');
+      root.style.setProperty('--button-hover-bg', '#0ea5e9');
+      root.style.setProperty('--header-gradient', 'linear-gradient(to right, #38bdf8, #818cf8)');
+      root.style.setProperty('--table-header-bg', '#38bdf8');
+      break;
+  }
+}
 
-      try {
-        const response = await fetch('/api/openai', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt })
-        });
+// Automatically apply selected on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const selectedTheme = document.getElementById('themeSwitcher').value;
+  applyTheme(selectedTheme);
+});
+</script>
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`API error (${response.status}): ${errorText}`);
-        }
-
-        const data = await response.json();
-        if (type === 'rate') {
-          document.getElementById('result').innerHTML = 
-            '<table><tr><th>Criteria</th><th>Rating</th><th>Comments</th></tr>' + 
-            data.result + 
-            '</table>';
-        } else {
-          document.getElementById('result').innerText = data.result;
-        }
-      } catch (error) {
-        console.error('Error response:', error);
-        document.getElementById('result').innerHTML = '<div style="color:red">Error: ' + error.message + '</div>';
-      } finally {
-        document.getElementById('loader').style.display = 'none';
-      }
-    }
-  </script>
 </body>
 </html>
