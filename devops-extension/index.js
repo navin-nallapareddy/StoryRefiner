@@ -1,3 +1,4 @@
+
 // Base URL of the StoryRefiner API
 const SERVER_URL = "https://storyrefiner.onrender.com";
 
@@ -6,13 +7,14 @@ let formService;
 SDK.ready().then(async function() {
   formService = await SDK.getService("ms.vss-work-web.work-item-form");
 
+SDK.init();
+SDK.ready().then(function() {
   document.getElementById("rateBtn").addEventListener("click", function() {
     handleAction("rate");
   });
   document.getElementById("rewriteBtn").addEventListener("click", function() {
     handleAction("rewrite");
   });
-
   updateActionsVisibility();
   formService.onFieldChanged(function(args) {
     if (args.changedFields.includes("System.Title") || args.changedFields.includes("System.Description")) {
@@ -31,6 +33,7 @@ async function updateActionsVisibility() {
     actions.style.display = "none";
   }
 }
+});
 async function handleAction(type) {
   document.getElementById("loader").style.display = "block";
   var formService = await SDK.getService("ms.vss-work-web.work-item-form");

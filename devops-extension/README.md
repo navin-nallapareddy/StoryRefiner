@@ -1,6 +1,6 @@
 # Story Quality AI Azure DevOps Extension
 
-This folder contains a minimal example of an Azure DevOps extension that adds a **Story Quality (AI)** section to the User Story work item form. Once the title and description fields have text, the extension shows **Rate It** and **Re-write** buttons which call the existing API provided by this repository.
+This folder contains a minimal example of an Azure DevOps extension that adds a **Story Quality (AI)** section to the User Story work item form. The section displays two buttons, **Rate It** and **Re-write**, which call the existing API provided by this repository.
 
 ## Files
 
@@ -10,6 +10,7 @@ This folder contains a minimal example of an Azure DevOps extension that adds a 
 - `style.css` – basic styling for the iframe
 
 ## Usage
+
 
 1. `index.js` is configured to use the hosted API at `https://storyrefiner.onrender.com`.
    Update `SERVER_URL` if you deploy the server elsewhere.
