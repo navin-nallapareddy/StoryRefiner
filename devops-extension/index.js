@@ -29,8 +29,11 @@ async function handleAction(type) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt: prompt })
     });
+    if (!response.ok) {
+      throw new Error("Request failed with status " + response.status);
+    }
     var data = await response.json();
-    document.getElementById("result").textContent = data.result;
+    document.getElementById("result").innerHTML = data.result;
   } catch (err) {
     document.getElementById("result").textContent = "Error: " + err.message;
   } finally {
