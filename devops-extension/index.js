@@ -1,4 +1,4 @@
-var SERVER_URL = ""; // e.g. https://myserver.example.com
+var SERVER_URL = "https://storyrefiner.onrender.com"; // e.g. https://myserver.example.com
 
 SDK.init();
 SDK.ready().then(function() {
