@@ -1,0 +1,39 @@
+{
+  "manifestVersion": 1,
+  "id": "story-quality-ai-extension",
+  "name": "Story Quality AI",
+  "version": "1.0.0",
+  "publisher": "sample",
+  "description": "Rate or rewrite user stories using OpenAI.",
+  "targets": [
+    "Microsoft.VisualStudio.Services"
+  ],
+  "files": [
+    { "path": "index.html", "address": "index.html" },
+    { "path": "index.js", "address": "index.js" },
+    { "path": "style.css", "address": "style.css" }
+  ],
+  "contributions": [
+    {
+      "id": "story-quality-group",
+      "type": "ms.vss-work-web.work-item-form-group",
+      "targets": [ "ms.vss-work-web.work-item-form" ],
+      "properties": {
+        "name": "Story Quality (AI)",
+        "controls": [
+          {
+            "id": "story-quality-control",
+            "type": "ms.vss-web.control-extension",
+            "properties": {
+              "uri": "index.html",
+              "height": 200
+            }
+          }
+        ]
+      },
+      "constraints": {
+        "workItemType": "User Story"
+      }
+    }
+  ]
+}
