@@ -11,7 +11,9 @@ This folder contains a minimal example of an Azure DevOps extension that adds a 
 
 ## Usage
 
-1. Update `SERVER_URL` in `index.js` to point to a running instance of this server.
+
+1. `index.js` is configured to use the hosted API at `https://storyrefiner.onrender.com`.
+   Update `SERVER_URL` if you deploy the server elsewhere.
 2. Install the [Azure DevOps extension CLI](https://learn.microsoft.com/azure/devops/extend/develop/command-line?view=azure-devops) and package the extension:
    ```bash
    tfx extension create --manifest-globs vss-extension.json

@@ -1,4 +1,11 @@
-var SERVER_URL = ""; // e.g. https://myserver.example.com
+
+// Base URL of the StoryRefiner API
+const SERVER_URL = "https://storyrefiner.onrender.com";
+
+SDK.init();
+let formService;
+SDK.ready().then(async function() {
+  formService = await SDK.getService("ms.vss-work-web.work-item-form");
 
 SDK.init();
 SDK.ready().then(function() {
@@ -8,8 +15,25 @@ SDK.ready().then(function() {
   document.getElementById("rewriteBtn").addEventListener("click", function() {
     handleAction("rewrite");
   });
+  updateActionsVisibility();
+  formService.onFieldChanged(function(args) {
+    if (args.changedFields.includes("System.Title") || args.changedFields.includes("System.Description")) {
+      updateActionsVisibility();
+    }
+  });
 });
 
+async function updateActionsVisibility() {
+  const title = await formService.getFieldValue("System.Title");
+  const description = await formService.getFieldValue("System.Description");
+  const actions = document.getElementById("actions");
+  if (title && title.trim() !== "" && description && description.trim() !== "") {
+    actions.style.display = "block";
+  } else {
+    actions.style.display = "none";
+  }
+}
+});
 async function handleAction(type) {
   document.getElementById("loader").style.display = "block";
   var formService = await SDK.getService("ms.vss-work-web.work-item-form");
