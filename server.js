@@ -60,6 +60,40 @@ app.get('/download-log', (req, res) => {
   res.download(path.join(__dirname, 'user_log.json'));
 });
 
+// Route to count unique locations in the user log
+app.get('/unique-locations', (req, res) => {
+  const logPath = path.join(__dirname, 'user_log.json');
+  if (!fs.existsSync(logPath)) {
+    return res.json({ uniqueLocations: 0 });
+  }
+
+  const rl = require('readline').createInterface({
+    input: fs.createReadStream(logPath),
+    crlfDelay: Infinity
+  });
+
+  const locations = new Set();
+
+  rl.on('line', line => {
+    try {
+      const entry = JSON.parse(line);
+      const loc = entry.location || {};
+      const key = `${loc.country || ''}|${loc.state || ''}|${loc.city || ''}`;
+      locations.add(key);
+    } catch (err) {
+      // ignore malformed lines
+    }
+  });
+
+  rl.on('close', () => {
+    res.json({ uniqueLocations: locations.size });
+  });
+
+  rl.on('error', () => {
+    res.status(500).json({ error: 'Failed to read log file' });
+  });
+});
+
 // API endpoint
 app.post('/api/openai', async (req, res) => {
   const { prompt } = req.body;

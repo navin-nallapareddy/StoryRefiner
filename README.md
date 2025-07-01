@@ -3,7 +3,8 @@
 This project provides a simple Express server with an interface to OpenAI. The
 server now includes middleware that records the caller's approximate location, but it does **not** store the originating IP address. Each request creates a JSON entry appended
 to `user_log.json`. You can download the accumulated log file by visiting
-`/download-log`.
+`/download-log`. A separate endpoint `/unique-locations` reports how many
+distinct `(country, state, city)` combinations appear in the log file.
 
 ## Configuration
 
@@ -29,6 +30,8 @@ the server with `npm start`.
   is reachable.
 - `POST /seed-test` - Inserts a row into the table selected by `APP_ENV` using
   values from the request body and the caller's detected location.
+- `GET /unique-locations` - Returns the number of distinct `(country, state,
+  city)` combinations found in `user_log.json`.
 
 ### Environment Based Tables
 
