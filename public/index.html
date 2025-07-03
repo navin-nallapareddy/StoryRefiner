@@ -213,7 +213,7 @@
       if (type === 'rate') {
         prompt = `Please rate the following user story based on the following criteria:\n\n- Clarity\n- Feasibility\n- Testability\n- Completeness\n- Value\n\nReturn the results as HTML <tr> rows only, like this:\n<tr><td>Clarity</td><td>8/10</td><td>Clear but missing outcome detail</td></tr>\n...\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
       } else {
-        prompt = `Please rewrite the following user story in proper format.\n\n1. Use the format: 'As a [user], I want to [goal] so that [reason]'.\n2. List assumptions clearly.\n3. Provide well-defined, bullet-point acceptance criteria.\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
+        prompt = `Please rewrite the following user story in proper format.\n\n1. Use the format: 'As a [user], I want to [goal] so that [reason]'.\n2. List assumptions clearly.\n3. Provide well-defined, bullet-point acceptance criteria.\n4. Describe a brief test approach that covers the user story.\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
       }
 
       try {

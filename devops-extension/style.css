@@ -1,0 +1,7 @@
+#container {
+  font-family: 'Segoe UI', sans-serif;
+}
+#result {
+  white-space: pre-wrap;
+  margin-top: 10px;
+}
