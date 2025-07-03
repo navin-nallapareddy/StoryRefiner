@@ -20,7 +20,7 @@ async function handleAction(type) {
   if (type === "rate") {
     prompt = `Please rate the following user story based on clarity, feasibility, testability, completeness and value. Return HTML <tr> rows only.\nTitle: ${title}\nDescription: ${description}`;
   } else {
-    prompt = `Please rewrite the user story.\nTitle: ${title}\nDescription: ${description}`;
+    prompt = `Please rewrite the user story and provide a short test approach that matches it.\nTitle: ${title}\nDescription: ${description}`;
   }
 
   try {
