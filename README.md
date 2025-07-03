@@ -20,6 +20,12 @@ Set a few environment variables before starting the server:
 Add these variables to a `.env` file or export them in your shell, then start
 the server with `npm start`.
 
+The web UI offers two AI-powered actions:
+
+- **Rate It** &ndash; scores the user story against multiple criteria.
+- **Re-write** &ndash; rewrites the story, lists assumptions and acceptance
+  criteria, and now includes a short test approach tailored to the story.
+
 ## API Endpoints
 
 - `POST /user-story` - Persist a user story and associated AI data. The payload

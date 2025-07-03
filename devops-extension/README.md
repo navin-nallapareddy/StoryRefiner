@@ -1,6 +1,6 @@
 # Story Quality AI Azure DevOps Extension
 
-This folder contains a minimal example of an Azure DevOps extension that adds a **Story Quality (AI)** section to the User Story work item form. The section displays two buttons, **Rate It** and **Re-write**, which call the existing API provided by this repository.
+This folder contains a minimal example of an Azure DevOps extension that adds a **Story Quality (AI)** section to the User Story work item form. The section displays two buttons, **Rate It** and **Re-write**, which call the existing API provided by this repository. The re-write action now includes a brief test approach alongside the rewritten story.
 
 ## Files
 
