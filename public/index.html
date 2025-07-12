@@ -177,10 +177,12 @@
     -webkit-text-fill-color: transparent;
     margin-bottom: 2rem;">AI User Story Refiner</h1>
 
-    <h3>Enter User Story</h3>
-    <textarea id="userStory" rows="4" placeholder="Enter User Story"></textarea>
-    <h3>Enter Acceptance Criteria</h3>
-    <textarea id="acceptanceCriteria" rows="4" placeholder="Enter Acceptance Criteria"></textarea>
+    <h3>User Story</h3>
+    <textarea id="userStory" rows="4" placeholder="User Story"></textarea>
+    <h3>Assumptions</h3>
+    <textarea id="assumptions" rows="4" placeholder="Assumptions"></textarea>
+    <h3>Acceptance Criteria</h3>
+    <textarea id="acceptanceCriteria" rows="4" placeholder="Acceptance Criteria"></textarea>
     <button onclick="callOpenAI('rate')">Rate It</button>
     <button onclick="callOpenAI('rewrite')">Re-write</button>
     <button onclick="callOpenAI('summary')">Test Summary</button>
@@ -210,15 +212,16 @@
       document.getElementById('result').innerHTML = '';
 
       const userStory = document.getElementById('userStory').value;
+      const assumptions = document.getElementById('assumptions').value;
       const acceptanceCriteria = document.getElementById('acceptanceCriteria').value;
 
       let prompt = '';
       if (type === 'rate') {
-        prompt = `Please rate the following user story based on the following criteria:\n\n- Clarity\n- Feasibility\n- Testability\n- Completeness\n- Value\n\nReturn the results as HTML <tr> rows only, like this:\n<tr><td>Clarity</td><td>8/10</td><td>Clear but missing outcome detail</td></tr>\n...\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
+        prompt = `Please rate the following user story based on the following criteria:\n\n- Clarity\n- Feasibility\n- Testability\n- Completeness\n- Value\n\nReturn the results as HTML <tr> rows only, like this:\n<tr><td>Clarity</td><td>8/10</td><td>Clear but missing outcome detail</td></tr>\n...\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
       } else if (type === 'rewrite') {
-        prompt = `Please rewrite the following user story in proper format.\n\n1. Use the format: 'As a [user], I want to [goal] so that [reason]'.\n2. List assumptions clearly.\n3. Provide well-defined, bullet-point acceptance criteria.\n4. Describe a brief test approach that covers the user story.\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
+        prompt = `Please rewrite the following user story in proper format.\n\n1. Use the format: 'As a [user], I want to [goal] so that [reason]'.\n2. List assumptions clearly.\n3. Provide well-defined, bullet-point acceptance criteria.\n4. Describe a brief test approach that covers the user story.\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
       } else {
-        prompt = `Summarize recommended test cases for the following user story. Provide a table using the columns ID, Test Description and Risk Level. Return only HTML <tr> rows.\n\nUser Story: ${userStory}\nAcceptance Criteria: ${acceptanceCriteria}`;
+        prompt = `Summarize recommended test cases for the following user story. Provide a table using the columns ID, Test Description and Risk Level. Return only HTML <tr> rows.\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
       }
 
       try {
@@ -252,6 +255,7 @@
           action:
             type === 'rate' ? 'RATE' : type === 'rewrite' ? 'REWRITE' : 'SUMMARY',
           original_story: userStory,
+          original_assumptions: assumptions,
           original_criteria: acceptanceCriteria,
           raw_response: data.raw
         };
