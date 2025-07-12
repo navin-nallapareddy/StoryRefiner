@@ -8,6 +8,9 @@ SDK.ready().then(function() {
   document.getElementById("rewriteBtn").addEventListener("click", function() {
     handleAction("rewrite");
   });
+  document.getElementById("summaryBtn").addEventListener("click", function() {
+    handleAction("summary");
+  });
 });
 
 async function handleAction(type) {
@@ -19,8 +22,10 @@ async function handleAction(type) {
   var prompt;
   if (type === "rate") {
     prompt = `Please rate the following user story based on clarity, feasibility, testability, completeness and value. Return HTML <tr> rows only.\nTitle: ${title}\nDescription: ${description}`;
-  } else {
+  } else if (type === "rewrite") {
     prompt = `Please rewrite the user story and provide a short test approach that matches it.\nTitle: ${title}\nDescription: ${description}`;
+  } else {
+    prompt = `Summarize recommended test cases in a table with columns ID, Test Description and Risk Level. Return only HTML <tr> rows.\nTitle: ${title}\nDescription: ${description}`;
   }
 
   try {
