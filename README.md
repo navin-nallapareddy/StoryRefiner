@@ -25,7 +25,7 @@ The web UI offers three AI-powered actions:
 - **Rate It** &ndash; scores the user story against multiple criteria.
 - **Re-write** &ndash; rewrites the story, lists assumptions and acceptance
   criteria, and now includes a short test approach tailored to the story.
-- **Summary** &ndash; generates a concise table of suggested test cases.
+- **Test Summary** &ndash; generates a concise table of suggested test cases.
 
 ## API Endpoints
 
