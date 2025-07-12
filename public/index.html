@@ -126,7 +126,10 @@
       color: white;
     }
     .spinner {
-      display: inline-block;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
       width: 24px;
       height: 24px;
       border: 3px solid rgba(0, 0, 0, 0.1);
@@ -135,6 +138,14 @@
       animation: spin 1s linear infinite;
       vertical-align: middle;
       margin-left: 10px;
+      font-size: 12px;
+    }
+    .spinner span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
     }
     @keyframes spin {
       to { transform: rotate(360deg); }
@@ -186,7 +197,7 @@
     <button onclick="callOpenAI('rate')">Rate It</button>
     <button onclick="callOpenAI('rewrite')">Re-write</button>
     <button onclick="callOpenAI('summary')">Test Summary</button>
-    <div id="loader" style="display:none;" class="spinner"></div>
+    <div id="loader" style="display:none;" class="spinner"><span id="timer">0</span></div>
     <div id="result"></div>
   </div>
 
@@ -195,6 +206,9 @@
       document.body.classList.remove('theme-ocean', 'theme-earth', 'theme-midnight');
       document.body.classList.add('theme-' + name);
     }
+
+    let timerId;
+    let startTime;
 
     document.addEventListener('DOMContentLoaded', () => {
       const selector = document.getElementById('themeSelector');
@@ -208,7 +222,15 @@
     });
 
     async function callOpenAI(type) {
-      document.getElementById('loader').style.display = 'inline-block';
+      const loader = document.getElementById('loader');
+      const timer = document.getElementById('timer');
+      loader.style.display = 'inline-flex';
+      timer.textContent = '0';
+      startTime = Date.now();
+      timerId = setInterval(() => {
+        const secs = Math.floor((Date.now() - startTime) / 1000);
+        timer.textContent = secs.toString();
+      }, 1000);
       document.getElementById('result').innerHTML = '';
 
       const userStory = document.getElementById('userStory').value;
@@ -286,6 +308,8 @@
         document.getElementById('result').innerHTML = '<div style="color:red">Error: ' + error.message + '</div>';
       } finally {
         document.getElementById('loader').style.display = 'none';
+        clearInterval(timerId);
+        document.getElementById('timer').textContent = '0';
       }
     }
   </script>
