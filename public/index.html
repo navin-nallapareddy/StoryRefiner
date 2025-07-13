@@ -197,6 +197,8 @@
     <button onclick="callOpenAI('rate')">Rate It</button>
     <button onclick="callOpenAI('rewrite')">Re-write</button>
     <button onclick="callOpenAI('summary')">Test &amp; Risk Summary</button>
+    <button onclick="callOpenAI('scripts')">Generate Test Scripts</button>
+    <button id="exportBtn" onclick="exportToExcel()" style="display:none;">Export to Excel</button>
     <div id="loader" style="display:none;" class="spinner"><span id="timer">0</span></div>
     <div id="result"></div>
   </div>
@@ -242,6 +244,8 @@
         prompt = `Please rate the following user story based on the following criteria:\n\n- Clarity\n- Feasibility\n- Testability\n- Completeness\n- Value\n\nReturn the results as HTML <tr> rows only, like this:\n<tr><td>Clarity</td><td>8/10</td><td>Clear but missing outcome detail</td></tr>\n...\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
       } else if (type === 'rewrite') {
         prompt = `Please rewrite the following user story in proper format.\n\n1. Use the format: 'As a [user], I want to [goal] so that [reason]'.\n2. List assumptions clearly.\n3. Provide well-defined, bullet-point acceptance criteria.\n4. Describe a brief test approach that covers the user story.\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
+      } else if (type === 'scripts') {
+        prompt = `Analyze the User Story, Assumptions and Acceptance Criteria. List every test scenario including positive, negative and edge cases. For each scenario, provide numbered test steps with an action and expected result. Return only HTML <tr> rows using columns Scenario Title, Action, Expected Result, repeating the scenario title for each step.\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
       } else {
         prompt = `Summarize recommended test cases for the following user story. Provide a table using the columns ID, Test Description and Risk Level. Return only HTML <tr> rows.\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
       }
@@ -264,18 +268,33 @@
             '<table><tr><th>Criteria</th><th>Rating</th><th>Comments</th></tr>' +
             data.result +
             '</table>';
+          document.getElementById('exportBtn').style.display = 'none';
         } else if (type === 'rewrite') {
           document.getElementById('result').innerText = data.result;
+          document.getElementById('exportBtn').style.display = 'none';
+        } else if (type === 'scripts') {
+          document.getElementById('result').innerHTML =
+            '<table><tr><th>Scenario Title</th><th>Action</th><th>Expected Result</th></tr>' +
+            data.result +
+            '</table>';
+          document.getElementById('exportBtn').style.display = 'inline-block';
         } else {
           document.getElementById('result').innerHTML =
             '<table><tr><th>ID</th><th>Test Description</th><th>Risk Level</th></tr>' +
             data.result +
             '</table>';
+          document.getElementById('exportBtn').style.display = 'none';
         }
 
         const payload = {
           action:
-            type === 'rate' ? 'RATE' : type === 'rewrite' ? 'REWRITE' : 'SUMMARY',
+            type === 'rate'
+              ? 'RATE'
+              : type === 'rewrite'
+              ? 'REWRITE'
+              : type === 'scripts'
+              ? 'SCRIPTS'
+              : 'SUMMARY',
           original_story: userStory,
           original_assumptions: assumptions,
           original_criteria: acceptanceCriteria,
@@ -284,8 +303,6 @@
 
         if (type === 'rate') {
           payload.ratings = data.result;
-        } else if (type === 'rewrite') {
-          payload.rewritten_story = data.result;
         } else {
           payload.rewritten_story = data.result;
         }
@@ -311,6 +328,26 @@
         clearInterval(timerId);
         document.getElementById('timer').textContent = '0';
       }
+    }
+
+    function exportToExcel() {
+      const table = document.querySelector('#result table');
+      if (!table) return;
+      const rows = Array.from(table.querySelectorAll('tr'));
+      const csv = rows
+        .map(row =>
+          Array.from(row.querySelectorAll('th,td'))
+            .map(col => '"' + col.innerText.replace(/"/g, '""') + '"')
+            .join(',')
+        )
+        .join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'test-scripts.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   </script>
 </body>

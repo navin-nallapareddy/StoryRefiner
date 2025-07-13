@@ -20,17 +20,18 @@ Set a few environment variables before starting the server:
 Add these variables to a `.env` file or export them in your shell, then start
 the server with `npm start`.
 
-The web UI offers three AI-powered actions:
+The web UI offers four AI-powered actions:
 
 - **Rate It** &ndash; scores the user story against multiple criteria.
 - **Re-write** &ndash; rewrites the story, lists assumptions and acceptance
   criteria, and now includes a short test approach tailored to the story.
 - **Test & Risk Summary** &ndash; generates a concise table of suggested test cases.
+- **Generate Test Scripts** &ndash; produces detailed test scripts that can be exported to Excel.
 
 ## API Endpoints
 
 - `POST /user-story` - Persist a user story and associated AI data. The payload
-  varies based on the `action` (`RATE`, `REWRITE` or `SUMMARY`) and always includes
+  varies based on the `action` (`RATE`, `REWRITE`, `SUMMARY` or `SCRIPTS`) and always includes
   `raw_response` from ChatGPT.
 - `GET /health` - Database connectivity check. Returns `200` when the database
   is reachable.
