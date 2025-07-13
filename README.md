@@ -26,10 +26,10 @@ The web UI offers four AI-powered actions:
 - **Re-write** &ndash; rewrites the story, lists assumptions and acceptance
   criteria, and now includes a short test approach tailored to the story.
 - **Test & Risk Summary** &ndash; generates a concise table of suggested test cases.
-- **Generate Test Scripts** &ndash; produces detailed test scripts that can be exported to Excel.
-  Use the "Generate Test Scripts" button to run an advanced prompt that returns
+- **Generate Test Scripts** &ndash; generates detailed test scripts for the scenarios listed in **Test & Risk Summary** and can export the results to Excel.
+  Use the "Generate Test Scripts" button after creating a summary to produce
   step-by-step test cases in JSON format, automatically rendered as a table with
-  an option to export the results to Excel.
+  an option to export to Excel.
 
 ## API Endpoints
 
