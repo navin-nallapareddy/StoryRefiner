@@ -31,7 +31,7 @@ async function handleAction(type) {
   } else if (type === "rewrite") {
     prompt = `Please rewrite the user story and provide a short test approach that matches it.\nTitle: ${title}\nDescription: ${description}`;
   } else if (type === "scripts") {
-    prompt = `Analyze the user story and identify all test scenarios including positive, negative and edge cases. Provide a table with columns Scenario Title, Action and Expected Result and return only HTML <tr> rows, repeating the scenario title for each step.\nTitle: ${title}\nDescription: ${description}`;
+    prompt = `Analyze the user story and identify all test scenarios including positive, negative and edge cases. For each scenario, provide at least three numbered steps with the action and expected result. Use a table with columns Scenario Title, Action and Expected Result, repeating the scenario title for every step. Return only HTML <tr> rows.\nTitle: ${title}\nDescription: ${description}`;
   } else {
     prompt = `Summarize recommended test cases in a table with columns ID, Test Description and Risk Level. Return only HTML <tr> rows.\nTitle: ${title}\nDescription: ${description}`;
   }
