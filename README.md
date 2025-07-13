@@ -29,7 +29,8 @@ The web UI offers four AI-powered actions:
 - **Generate Test Scripts** &ndash; produces detailed test scripts that can be exported to Excel.
   Use the "Generate Test Scripts" button to run an advanced prompt that returns
   step-by-step test cases in JSON format, automatically rendered as a table with
-  an option to export the results to Excel.
+  an option to export the results to Excel. This action relies on the scenarios
+  produced by the most recent **Test & Risk Summary**.
 
 ## API Endpoints
 
