@@ -247,8 +247,36 @@
       } else if (type === 'scripts') {
         prompt = `Analyze the User Story, Assumptions and Acceptance Criteria. List every test scenario including positive, negative and edge cases. For each scenario, provide numbered test steps with an action and expected result. Return only HTML <tr> rows using columns Scenario Title, Action, Expected Result, repeating the scenario title for each step.\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
       } else {
-        prompt = `Summarize recommended test cases for the following user story. Provide a table using the columns ID, Test Description and Risk Level. Return only HTML <tr> rows.\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
-      }
+  prompt = `You are a senior test analyst. Be extremely thorough.
+
+Based on the following information:
+
+User Story: ${userStory}
+Assumptions: ${assumptions}
+Acceptance Criteria: ${acceptanceCriteria}
+
+Do the following:
+
+1. Identify all possible test cases, including positive, negative, edge cases, and alternate flows that a senior QA would consider. Ensure nothing is missed.
+
+2. Provide a summary table with columns:
+   - ID
+   - Test Description
+   - Risk Level (High, Medium, Low)
+Return this summary **only as HTML <tr> rows**, ready to insert into a table.
+
+3. Then for each test case, generate a detailed test script with:
+   - Scenario Title (based on the Test Description)
+   - A sequential list of steps starting from **1** (restart numbering for each test case)
+   - Each step must include:
+     - Action
+     - Expected Result
+
+Ensure the detailed scripts are clearly formatted so they can be directly copied into Azure DevOps Test Plans.
+
+Return all of this in a single response.`
+}
+
 
       try {
         const response = await fetch('/api/openai', {
