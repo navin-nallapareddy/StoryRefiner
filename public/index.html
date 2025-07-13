@@ -281,6 +281,8 @@
           html += '</table>';
           document.getElementById('result').innerHTML = html;
           document.getElementById('exportBtn').style.display = 'inline-block';
+          exportToCsv();
+          document.getElementById('exportBtn').style.display = 'none';
         } else {
           document.getElementById('result').innerHTML =
             '<table><tr><th>ID</th><th>Test Description</th><th>Risk Level</th></tr>' +
