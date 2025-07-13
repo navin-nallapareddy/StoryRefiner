@@ -247,7 +247,7 @@
       } else if (type === 'summary') {
         prompt = `Summarize recommended test cases for the following user story. Provide a table using the columns ID, Test Description and Risk Level. Return only HTML <tr> rows.\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
       } else {
- You are a senior test analyst. Be extremely thorough and analytical.
+ 'You are a senior test analyst. Be extremely thorough and analytical.
 
 Use the following inputs provided by the user:
 
@@ -279,10 +279,10 @@ Important formatting requirements:
 - Repeat the fields id, work_item_type, and title for every step of the same test case, as Azure DevOps needs this to group the steps under each test case.
 - Ensure every assumption and acceptance criterion is fully tested, and include any implied scenarios a professional senior QA would identify.
 
-Output only the JSON array of rows, with no extra commentary or explanation. Format it cleanly for easy parsing.
+Output only the JSON array of rows, with no extra commentary or explanation. Format it cleanly for easy parsing.'
 
 }
-    }
+    
 
       try {
         const response = await fetch('/api/openai', {
