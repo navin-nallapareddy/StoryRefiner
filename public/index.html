@@ -197,8 +197,7 @@
     <button onclick="callOpenAI('rate')">Rate It</button>
     <button onclick="callOpenAI('rewrite')">Re-write</button>
     <button onclick="callOpenAI('summary')">Test &amp; Risk Summary</button>
-    <button onclick="callOpenAI('scripts')" id="scriptsBtn">Generate Test Scripts</button>
-    <button id="exportBtn" style="display:none;" onclick="exportToCsv()">Export to Excel</button>
+    
     <div id="loader" style="display:none;" class="spinner"><span id="timer">0</span></div>
     <div id="result"></div>
   </div>
@@ -211,7 +210,7 @@
 
     let timerId;
     let startTime;
-    let summaryScenarios = [];
+    
 
     document.addEventListener('DOMContentLoaded', () => {
       const selector = document.getElementById('themeSelector');
@@ -245,15 +244,7 @@
         prompt = `Please rate the following user story based on the following criteria:\n\n- Clarity\n- Feasibility\n- Testability\n- Completeness\n- Value\n\nReturn the results as HTML <tr> rows only, like this:\n<tr><td>Clarity</td><td>8/10</td><td>Clear but missing outcome detail</td></tr>\n...\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
       } else if (type === 'rewrite') {
         prompt = `Please rewrite the following user story in proper format.\n\n1. Use the format: 'As a [user], I want to [goal] so that [reason]'.\n2. List assumptions clearly.\n3. Provide well-defined, bullet-point acceptance criteria.\n4. Describe a brief test approach that covers the user story.\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
-      } else if (type === 'scripts') {
-        let scenarioText = '';
-        if (summaryScenarios.length) {
-          scenarioText =
-            '\n\nTest Scenarios:\n' +
-            summaryScenarios.map((s, i) => `${i + 1}. ${s}`).join('\n');
-        }
-          prompt = `You are a senior test analyst. Be extremely thorough and analytical.${scenarioText}\n\nUse the following inputs provided by the user:\n\nUser Story:\n${userStory}\n\nAssumptions:\n${assumptions}\n\nAcceptance Criteria:\n${acceptanceCriteria}\n\nYour tasks:\n\n1. Carefully analyze this information and generate detailed test steps for each provided scenario. Each scenario must contain at least three steps and each test case must have its step numbering start at 1.\n\n2. Return the data as a structured JSON array of rows, where each row represents a single test step. Each row must include these exact fields:\n- id: leave this blank (Azure DevOps assigns it automatically)\n- work_item_type: always set to "Test Case"\n- title: the test case title (repeated on every row of that test case)\n- test_step: the step number, starting from 1 for each new test case\n- step_action: what the user does\n- step_expected: what is expected to happen\n\nImportant formatting requirements:\n- Each new test case must restart its test_step at 1.\n- Repeat the fields id, work_item_type, and title for every step of the same test case, as Azure DevOps needs this to group the steps under each test case.\n- Ensure every assumption and acceptance criterion is fully tested, and include any implied scenarios a professional senior QA would identify.\n\nOutput only the JSON array of rows, with no extra commentary or explanation. Format it cleanly for easy parsing.`;
-      } else {
+        } else {
         prompt = `Summarize recommended test cases for the following user story. Provide a table using the columns ID, Test Description and Risk Level. Return only HTML <tr> rows.\n\nUser Story: ${userStory}\nAssumptions: ${assumptions}\nAcceptance Criteria: ${acceptanceCriteria}`;
       }
 
@@ -275,21 +266,8 @@
             '<table><tr><th>Criteria</th><th>Rating</th><th>Comments</th></tr>' +
             data.result +
             '</table>';
-          document.getElementById('exportBtn').style.display = 'none';
         } else if (type === 'rewrite') {
           document.getElementById('result').innerText = data.result;
-          document.getElementById('exportBtn').style.display = 'none';
-        } else if (type === 'scripts') {
-          const rows = JSON.parse(data.result);
-          let html = '<table><tr><th>ID</th><th>Work Item Type</th><th>Title</th><th>Step #</th><th>Action</th><th>Expected</th></tr>';
-          rows.forEach(r => {
-            html += `<tr><td>${r.id}</td><td>${r.work_item_type}</td><td>${r.title}</td><td>${r.test_step}</td><td>${r.step_action}</td><td>${r.step_expected}</td></tr>`;
-          });
-          html += '</table>';
-          document.getElementById('result').innerHTML = html;
-          document.getElementById('exportBtn').style.display = 'inline-block';
-          exportToCsv();
-          document.getElementById('exportBtn').style.display = 'none';
         } else {
           document.getElementById('result').innerHTML =
             '<table><tr><th>ID</th><th>Test Description</th><th>Risk Level</th></tr>' +
@@ -297,11 +275,6 @@
             '</table>';
           const tmp = document.createElement('div');
           tmp.innerHTML = '<table>' + data.result + '</table>';
-          summaryScenarios = Array.from(tmp.querySelectorAll('tr'))
-            .slice(1)
-            .map(row => row.children[1]?.textContent.trim())
-            .filter(Boolean);
-          document.getElementById('exportBtn').style.display = 'none';
         }
 
         const payload = {
@@ -310,8 +283,6 @@
               ? 'RATE'
               : type === 'rewrite'
               ? 'REWRITE'
-              : type === 'scripts'
-              ? 'SCRIPTS'
               : 'SUMMARY',
           original_story: userStory,
           original_assumptions: assumptions,
@@ -350,25 +321,6 @@
       }
     }
 
-    function exportToCsv() {
-      const table = document.querySelector('#result table');
-      if (!table) return;
-      const rows = Array.from(table.querySelectorAll('tr'));
-      const csv = rows
-        .map(row =>
-          Array.from(row.querySelectorAll('th,td'))
-            .map(cell => '"' + cell.innerText.replace(/"/g, '""') + '"')
-            .join(',')
-        )
-        .join('\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'test-scripts.csv';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
   </script>
 </body>
 </html>

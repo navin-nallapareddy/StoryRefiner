@@ -26,15 +26,11 @@ The web UI offers four AI-powered actions:
 - **Re-write** &ndash; rewrites the story, lists assumptions and acceptance
   criteria, and now includes a short test approach tailored to the story.
 - **Test & Risk Summary** &ndash; generates a concise table of suggested test cases.
-- **Generate Test Scripts** &ndash; generates detailed test scripts for the scenarios listed in **Test & Risk Summary** and can export the results to Excel.
-  Use the "Generate Test Scripts" button after creating a summary to produce
-  step-by-step test cases in JSON format, automatically rendered as a table with
-  an option to export to Excel.
 
 ## API Endpoints
 
 - `POST /user-story` - Persist a user story and associated AI data. The payload
-  varies based on the `action` (`RATE`, `REWRITE`, `SUMMARY` or `SCRIPTS`) and always includes
+  varies based on the `action` (`RATE`, `REWRITE` or `SUMMARY`) and always includes
   `raw_response` from ChatGPT.
 - `GET /health` - Database connectivity check. Returns `200` when the database
   is reachable.
