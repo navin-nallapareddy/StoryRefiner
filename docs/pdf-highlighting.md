@@ -11,7 +11,10 @@ The typical issue occurs when highlight rectangles are calculated directly from 
 3. For every match, compute the rectangle using the item's width and height:
    ```js
    const transform = pdfjsLib.Util.transform(viewport.transform, item.transform);
-   const [x, y] = transform;
+   // The translation components (index 4 and 5) give us the top‑left corner
+   // of the text item in PDF coordinates.
+   const x = transform[4];
+   const y = transform[5];
    const charWidth = item.width / item.str.length;
    const rect = {
      x: x + charWidth * match.index,
